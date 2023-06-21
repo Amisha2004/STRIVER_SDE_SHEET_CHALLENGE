@@ -1,6 +1,77 @@
-// THE CELEBRITY PROBLEM
 #include <bits/stdc++.h> 
 using namespace std;
+/********************STOCK SPAN PROBLEM************************************/
+vector<int> findSpans(vector<int> &arr) {
+    stack<pair<int,int>>s;
+    int n=arr.size();
+    vector<int>ans;
+    for(int i=0;i<n;i++){
+        if(s.size()==0){
+            ans.push_back(-1);
+        }
+        else if(s.size()>0 && (s.top().first)>arr[i]){
+            ans.push_back(s.top().second);
+        }
+        else if(s.size()>0&&s.top().first<=arr[i]){
+            while(s.size()>0&&s.top().first<=arr[i]){
+                s.pop();
+            }
+            if(s.size()==0){
+                ans.push_back(-1);
+            }
+            else {
+                ans.push_back(s.top().second);
+            }
+        }
+        s.push({arr[i],i});
+    }
+    for(int i=0;i<ans.size();i++){
+        ans[i]=i-ans[i];
+    }
+    return ans;
+}
+/************************MAXIMUM OF MINIMUM FOR EVERY WINDOW SIZE*************************/
+vector<int> maxMinWindow(vector<int> arr, int n) {
+    stack<int> s;
+    vector<int>left(n+1,-1) ;
+    vector<int>right(n+1,n);
+
+    for (int i = 0; i < n; i++) {
+      while (!s.empty() && arr[s.top()] >= arr[i]) {
+        s.pop();
+      }
+      if (!s.empty()) {
+        left[i] = s.top();
+      }
+        s.push(i);
+    }
+
+    while (!s.empty()) {
+      s.pop();
+    }
+    for (int i = n - 1; i >= 0; i--) {
+        while (!s.empty() && arr[s.top()] >= arr[i])
+            s.pop();
+ 
+        if (!s.empty())
+            right[i] = s.top();
+ 
+        s.push(i);
+    }
+    vector<int>ans(n+1,INT_MIN),res(n);
+    for (int i = 0; i < n; i++) {
+        int len = right[i] - left[i] - 1;
+        ans[len] = max(ans[len], arr[i]);
+    }
+    for (int i = n - 1; i >= 1; i--)
+        ans[i] = max(ans[i], ans[i + 1]);
+ 
+     for (int i = 1; i <= n; i++)
+    res[i - 1] = ans[i];
+
+  return res;
+}
+/*****************************THE CELEBRITY PROBLEM***************************************/
 /*****************GIVEN IN THE QUESTION********************/
 vector<vector<int>>check;
 bool knows(int i,int j){
